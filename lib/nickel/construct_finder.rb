@@ -548,7 +548,7 @@ module Nickel
     end
 
     def found_next_week
-      sd = @curdate.add_days(7)
+      sd = @curdate.next(0)
       ed = sd.add_days(7)
       @constructs << DateSpanConstruct.new(:start_date => sd, :end_date => ed, :comp_start => @pos, :comp_end => @pos += 1, :found_in => method_name)
     end

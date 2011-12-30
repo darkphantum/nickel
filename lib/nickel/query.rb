@@ -615,9 +615,12 @@ module Nickel
     def case_corrector
       orig = @query.split
       latest = @message.split
-      orig.each_with_index do |original_word,j|
-        if i = latest.index(original_word.downcase)
-          latest[i] = original_word
+      latest.each_with_index do |word, i|
+        while o = orig.shift
+          if word == o.downcase.gsub(/\W/, "")
+            latest[i] = o
+            break
+          end
         end
       end
       @message = latest.join(" ")

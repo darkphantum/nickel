@@ -132,8 +132,12 @@ module Nickel
     end
     
     # for example, "next friday"
+    # If "day" is the previous day, "next" usually refers to the upcoming day
+    # From Mon through Sat, "next" usually refers to the upcoming day if it has already passed this week
+    # Sunday is usually the start of the week, so "next" will refer to the week after this one.
     def next(day)
-      x_weeks_from_day(1, day)
+      x = ((day1index - day) % 7 == 1 or (day1index != SUN and day < day1index)) ? 0 : 1
+      x_weeks_from_day(x, day)
     end
 
     # for example, "previous friday"

@@ -56,6 +56,16 @@ module Nickel
     def message
       @nlp_query.message
     end
+
+    # returns start_date string (in %Y%m%d format) of the first occurence, if it exists
+    def start_date
+      (@occurrences.first and @occurrences.first.start_date) ? @occurrences.first.start_date.date : nil
+    end
+
+    # returns start_time string (in %H%M%S format) of the first occurence, if it exists
+    def start_time
+      (@occurrences.first and @occurrences.first.start_time) ? @occurrences.first.start_time.time : nil
+    end
     
     private
     def validate_input query, date_time

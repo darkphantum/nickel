@@ -14,6 +14,7 @@ module Nickel
       t = hhmmss ? hhmmss : ::Time.new.strftime("%H%M%S")
       t.gsub!(/:/,'') # remove any hyphens, so a user can initialize with something like "2008-10-23"
       self.time = t
+      if (am_pm.nil? and time[0..1].to_i < 8) then am_pm = :pm end
       if am_pm then adjust_for(am_pm) end
     end
 

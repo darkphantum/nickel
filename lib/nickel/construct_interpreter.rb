@@ -20,6 +20,10 @@ module Nickel
     end
 
     def run
+      if found_only_time
+        set_date_as_curdate
+      end
+
       if found_dates
         occurrences_from_dates
       elsif found_one_date_span
@@ -238,6 +242,17 @@ module Nickel
       else
         yield(occ_base)
       end
+    end
+
+    def found_only_time
+      @tci.size > 0 && @dci.size == 0 && @tsci.size == 0  &&  @dsci.size == 0 && @rci.size == 0 && @wci.size == 0
+    end
+
+    def set_date_as_curdate
+      dindex = @constructs.count
+      @dci << dindex
+      @sorted_time_map[dindex] = [0]
+      @constructs << DateConstruct.new(:date => @curdate, :comp_start => nil, :comp_end => nil, :found_in => nil)
     end
 
     def found_dates

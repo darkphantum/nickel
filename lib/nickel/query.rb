@@ -29,6 +29,7 @@ module Nickel
       standardize_numbers
       standardize_am_pm
       replace_hyphens
+      parse_at_symbol
       insert_repeats_before_words_indicating_recurrence_lame
       insert_space_at_end_of_string_lame
       @after_formatting = self.dup    # save current state
@@ -100,7 +101,7 @@ module Nickel
       nsub!(/\bevery?day\b/,'every day')
       nsub!(/eigth/,'eighth')
       nsub!(/bi[-\s]monthly/,'bimonthly')
-      nsub!(/tri[-\s]monthly/,'trimonthly')
+      nsub!(/tri[-\s]monthly/,'trimonthly') 
     end
 
     def remove_unnecessary_words
@@ -112,7 +113,7 @@ module Nickel
       nsub!(/\s*at\s+night/,'pm')
       nsub!(/(after\s*)?noon(ish)?/,'12:00pm')
       nsub!(/\bmi(dn|nd)ight\b/,'12:00am')
-      nsub!(/final/,'last') 
+      #nsub!(/final/,'last') 
       nsub!(/recur(s|r?ing)?/,'repeats')
       nsub!(/\beach\b/,'every')
       nsub!(/running\s+(until|through)/,'through')
@@ -386,6 +387,10 @@ module Nickel
 
     def replace_hyphens
       nsub!(/--?/,' through ')
+    end
+
+    def parse_at_symbol
+      nsub!(/\@ ?([0-9])/,'at \1')  # changes "@5" or "@ 5" to "at 5"
     end
 
     def insert_repeats_before_words_indicating_recurrence_lame

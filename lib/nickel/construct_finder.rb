@@ -585,7 +585,7 @@ module Nickel
     end
     
     def match_x_weeks_from
-      @components[@pos].digits_only? && @components[@pos+1] =~ /^weeks?$/ && @components[@pos+2] == "from" && @length = @components[@pos].to_i      # if "x weeks from"
+      @components[@pos].digits_only? && @components[@pos+1] =~ /^weeks?$/ && @components[@pos+2] == "from" && @length = @components[@pos].to_f      # if "x weeks from"
     end
 
     def match_x_weeks_from_dayname
@@ -640,7 +640,7 @@ module Nickel
     end
     
     def match_x_months_from
-      @components[@pos].digits_only? && @components[@pos+1] =~ /^months?$/ && @components[@pos+2] == "from" && @length = @components[@pos].to_i       # if "x months from"
+      @components[@pos].digits_only? && @components[@pos+1] =~ /^months?$/ && @components[@pos+2] == "from" && @length = @components[@pos].to_f       # if "x months from"
     end
 
     def match_x_months_from_dayname
@@ -692,7 +692,7 @@ module Nickel
     end
     
     def match_x_days_from
-      @components[@pos].digits_only? && @components[@pos+1] =~ /^days?$/ && @components[@pos+2] == "from" && @length = @components[@pos].to_i     # 3 days from    
+      @components[@pos].digits_only? && @components[@pos+1] =~ /^days?$/ && @components[@pos+2] == "from" && @length = @components[@pos].to_f     # 3 days from    
     end
 
     def match_x_days_from_now

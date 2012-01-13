@@ -20,6 +20,8 @@ module Nickel
     FRI = 4
     SAT = 5
     SUN = 6
+
+    AVG_MONTH_LENGTH = 30
      
     class << self
       attr_reader :days_of_week, :months_of_year, :days_in_common_year_months, :days_in_leap_year_months, :full_days_of_week, :full_months_of_year 
@@ -161,6 +163,7 @@ module Nickel
     
     # add_ methods return new ZDate object, they DO NOT modify self
     def add_days(number)
+      number = number.to_i
       if number < 0 then return sub_days(number.abs) end
       o = self.dup  # new ZDate object
       # Let's see what month we are going to end in
@@ -177,10 +180,16 @@ module Nickel
     end
     
     def add_weeks(number)
-      self.add_days(7*number)
+      self.add_days((7*number).round)
     end
     
     def add_months(number)
+      new_day = (self.day + AVG_MONTH_LENGTH*(number - number.to_i)).to_i
+      if new_day > AVG_MONTH_LENGTH
+        new_day = new_day % AVG_MONTH_LENGTH
+        number = number.to_i + 1
+      end
+      number = number.to_i
       new_month = 1 + ((month - 1 + number) % 12)
       if number > months_left_in_year            # are we going to change year?
         years_to_increment = 1 + ((number - months_left_in_year) / 12)    # second term adds years if user entered a large number of months (e.g. date.add_months(50))
@@ -188,14 +197,15 @@ module Nickel
         years_to_increment = 0
       end
       new_year = year + years_to_increment
-      new_day = get_day_or_max_day_in_month(self.day, new_month, new_year)
+      new_day = get_day_or_max_day_in_month(new_day, new_month, new_year)
       ZDate.new(new_year.to_s + new_month.to_s2 + new_day.to_s2)
     end
     
     def add_years(number)
-      new_year = year + number
-      new_day = get_day_or_max_day_in_month(self.day, self.month, new_year)
-      ZDate.new(new_year.to_s + self.month_str + new_day.to_s2)
+      self.add_months(number * 12)
+      #new_year = year + number
+      #new_day = get_day_or_max_day_in_month(self.day, self.month, new_year)
+      #ZDate.new(new_year.to_s + self.month_str + new_day.to_s2)
     end
 
     # DEPRECATED, change_ methods in ZTime modify self, this was confusing,

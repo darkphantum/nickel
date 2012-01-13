@@ -70,7 +70,7 @@ module Nickel
 
     def remove_unused_punctuation
       nsub!(/,/,' ')
-      nsub!(/\./,'')
+      #nsub!(/\./,'')
       nsub!(/;/,'')
       nsub!(/['`]/,'')
     end
@@ -375,7 +375,8 @@ module Nickel
       nsub!(/\bone\b/,'1')
       nsub!(/\bfirst\b/,'1st')
       nsub!(/\bzero\b/,'0')
-      nsub!(/\bzeroth\b/,'0th')  
+      nsub!(/\bzeroth\b/,'0th')
+      nsub!(/(^|\W)(\.\d+)/, '\10\2')
     end
 
     def standardize_am_pm
@@ -463,7 +464,8 @@ module Nickel
       return validity
     end # END valid_minute?
     def digits_only?
-      self =~ /^\d+$/ #no characters other than digits
+      #self =~ /^\d+$/ #no characters other than digits
+      self =~ /^\d+(\.\d*)?$/
     end
 
     # Interpret Time is an important one, set some goals:
@@ -991,12 +993,12 @@ module Nickel
       nsub!(/^(?:the\s+)?#{DATE_DD_WITH_SUFFIX}\s+(?:through|to|until)\s+(?:the\s+)?#{DATE_DD_WITH_SUFFIX}$/,'\1 through \2 ')
       
       # "x week(s) away" --> x week(s) from now
-      nsub!(/([0-9]+)\s+(day|week|month)s?\s+away/,'\1 \2s from now')
+      nsub!(/(\d+(?:\.\d*)?)\s+(day|week|month)s?\s+away/,'\1 \2s from now')
       
       # "x days from now" --> "x days from now"
       # "in 2 weeks|days|months" --> 2 days|weeks|months from now"
-      nsub!(/\b(an?|[0-9]+)\s+(day|week|month)s?\s+(?:from\s+now|away)/, '\1 \2 from now')
-      nsub!(/in\s+(a|[0-9]+)\s+(week|day|month)s?/, '\1 \2 from now')
+      nsub!(/\b(an?|\d+(?:\.\d*)?)\s+(day|week|month)s?\s+(?:from\s+now|away)/, '\1 \2 from now')
+      nsub!(/in\s+(a|\d+(?:\.\d*)?)\s+(week|day|month)s?/, '\1 \2 from now')
       
       # "x minutes|hours from now" --> "in x hours|minutes"
       # "in x hour(s)" --> 11/20/07 at 22:00

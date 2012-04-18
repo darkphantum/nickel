@@ -87,6 +87,7 @@ module Nickel
       nsub!(/weak/,'week')
       nsub!(/everyweek/,'every week')
       nsub!(/everymonth/,'every month')
+      nsub!(/everyyear/,'every year')
       nsub!(/c?h[oa]nn?[aui][ck][ck]?[ua]h?/,'hannukkah')
       nsub!(/frist/,'1st')
       nsub!(/eveyr|evrey/,'every')
@@ -124,6 +125,7 @@ module Nickel
       nsub!(/\bany(?:\s*)day\b/,'every day')
       nsub!(/^anytime$/,'every day')  # user entered anytime by itself, not 'dayname anytime', caught next
       nsub!(/any(\s)?time|whenever/,'all day')
+      nsub!(/annually/,'yearly')
     end
 
     def standardize_days
@@ -399,6 +401,7 @@ module Nickel
       (daily_index = comps.index("daily")) && comps[daily_index - 1] != "repeats" && comps[daily_index] = "repeats daily"
       (weekly_index = comps.index("weekly")) && comps[weekly_index - 1] != "repeats" && comps[weekly_index] = "repeats weekly"
       (monthly_index = comps.index("monthly")) && comps[monthly_index - 1] != "repeats" && comps[monthly_index] = "repeats monthly"
+      (yearly_index = comps.index("yearly")) && comps[yearly_index - 1] != "repeats" && comps[yearly_index] = "repeats yearly"
       if (rejoin = comps.join(' ')) != self
         nsub!(/.+/,rejoin)
       end

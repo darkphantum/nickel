@@ -69,6 +69,7 @@ module Nickel
             if match_repeats_threemonthly_daymonthly      then  found_repeats_threemonthly_daymonthly         # repeats threemonthly 1st fri
             elsif match_repeats_threemonthly_datemonthly  then  found_repeats_threemonthly_datemonthly        # repeats threemonthly 22nd
             end                                                                                               
+          elsif match_repeats_yearly                      then  found_repeats_yearly
           end                                                                                                 
                                                                                                               
       elsif match_for_x                                                                                       
@@ -417,6 +418,19 @@ module Nickel
       @constructs << RecurrenceConstruct.new(:repeats => :threedatemonthly, :repeats_on => @date_array, :comp_start => @pos, :comp_end => @pos += (j - 1), :found_in => method_name)
     end
 
+    def match_repeats_yearly
+      (@components[@pos+1] == "yearly") && @date_array = [@components[@pos+2].interpret_date(@curdate)]
+    end
+
+    def found_repeats_yearly
+      j = 3
+      while @components[@pos+j] && @components[@pos+j].interpret_date(@curdate)
+        @date_array << @components[@pos+j].interpret_date(@curdate)
+        j += 2
+      end
+      @constructs << RecurrenceConstruct.new(:repeats => :yearly, :repeats_on => @date_array, :comp_start => @pos, :comp_end => @pos += (j - 1), :found_in => method_name)
+    end
+    
     def match_for_x
       @components[@pos]=="for" && @components[@pos+1].digits_only? && @length = @components[@pos+1].to_i
     end  

@@ -8,8 +8,8 @@ module Nickel
     include InstanceFromHash
 
     # Some notes about this class, @type can take the following values:
-    # :single, :daily, :weekly, :daymonthly, :datemonthly,
-    attr_accessor :type, :start_date, :end_date, :start_time, :end_time, :interval, :day_of_week, :week_of_month, :date_of_month
+    # :single, :daily, :weekly, :daymonthly, :datemonthly, :yearly
+    attr_accessor :type, :start_date, :end_date, :start_time, :end_time, :interval, :day_of_week, :week_of_month, :date_of_month, :month_of_year
     
     def initialize(h)
       @start_date = nil     # prevents warning in testing;  but why is the warning there in the first place? Because I should be using instance_variable_defined in finalize method instead of checking for nil vals
@@ -26,6 +26,7 @@ module Nickel
       str << %(, day_of_week: #{day_of_week})       if day_of_week
       str << %(, week_of_month: #{week_of_month})   if week_of_month
       str << %(, date_of_month: #{date_of_month})   if date_of_month
+      str << %(, month_of_year: #{month_of_year})   if month_of_year
       str << ">"
       str
     end
@@ -75,6 +76,22 @@ module Nickel
           @start_date = cur_date.get_date_from_day_and_week_of_month(@day_of_week, @week_of_month)
         else
           @start_date = @start_date.get_date_from_day_and_week_of_month(@day_of_week, @week_of_month)
+        end
+      elsif @type == :yearly
+        if @start_date.nil?
+          if cur_date.month <= @month_of_year
+            @start_date = cur_date.add_months(@month_of_year - cur_date.month)
+          else
+            @start_date = cur_date.add_years(1).jump_to_month(@month_of_year)
+          @start_date = @start_date.beginning_of_month.add_days(@date_of_month - 1)
+          end
+        else
+          if @start_date.month <= @month_of_year
+            @start_date = @start_date.add_months(@month_of_year - @start_date.month)
+          else
+            @start_date = @start_date.add_years(1).jump_to_month(@month_of_year)
+          @start_date = @start_date.beginning_of_month.add_days(@date_of_month - 1)
+          end
         end
       end
       

@@ -43,6 +43,7 @@ module Nickel
       elsif variant_of?(:weekly)      then interpret_weekly_variant
       elsif variant_of?(:daymonthly)  then interpret_daymonthly_variant
       elsif variant_of?(:datemonthly) then interpret_datemonthly_variant
+      elsif variant_of?(:yearly)      then interpret_yearly_variant
       else
         puts @repeats.inspect
         raise StandardError.new("self is an invalid variant, check value of self.repeats or @repeats")
@@ -61,7 +62,7 @@ module Nickel
     private
     def has_interval_of?(x)
       case x
-      when 1 then [:daily, :weekly, :daymonthly, :datemonthly].include?(@repeats)
+      when 1 then [:daily, :weekly, :daymonthly, :datemonthly, :yearly].include?(@repeats)
       when 2 then [:altdaily, :altweekly, :altdaymonthly, :altdatemonthly].include?(@repeats)
       when 3 then [:threedaily, :threeweekly, :threedaymonthly, :threedatemonthly].include?(@repeats)
       end
@@ -73,6 +74,7 @@ module Nickel
       when :weekly      then [:weekly, :altweekly, :threeweekly].include?(@repeats)
       when :daymonthly  then [:daymonthly, :altdaymonthly, :threedaymonthly].include?(@repeats)
       when :datemonthly then [:datemonthly, :altdatemonthly, :threedatemonthly].include?(@repeats)
+      when :yearly      then [:yearly].include?(@repeats)
       end
     end
 
@@ -117,5 +119,16 @@ module Nickel
       end
       array_of_occurrences
     end
+
+    def interpret_yearly_variant
+      hash_for_occ_base = {:type => :yearly, :interval => get_interval}
+      array_of_occurrences = []
+      @repeats_on.each do |date|
+        h = {:date_of_month => date.day(), :month_of_year => date.month()}
+        array_of_occurrences << hash_for_occ_base.merge(h)
+      end
+      array_of_occurrences
+    end
+
   end
 end
